@@ -1,0 +1,9 @@
+{
+    // "python.defaultInterpreterPath": ".venv/bin/python",    // Wskazuje na binarkę Pythona w naszym Virtualenv'ie.
+    "files.exclude": {                         // Nie pokazuje tych katalogów w panelu po lewej. Wyłącza to też szukanie w nich.
+      ".vscode": true,
+      "**/venv": true,
+      "**/.venv": true,
+      "**/__pycache__": true,
+    },
+  }
