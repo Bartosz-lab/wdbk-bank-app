@@ -48,3 +48,4 @@ class TransferToConfirm(db.Model):
     amount = sa.Column(sa.Numeric(scale=2), nullable=False)
     iban = sa.Column(sa.String(40), nullable=False)
     user_id = sa.Column(sa.Integer, sa.ForeignKey(User.id), nullable=False)
+    task_id = sa.Column(sa.String(30), unique=True)

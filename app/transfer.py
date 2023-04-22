@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, abort
 from flask_login import login_required, current_user
+from datetime import datetime, timedelta
 
 
 from .models import Transfer, TransferToConfirm
 from .forms import TransferForm, TransferConfirmForm
-from . import db
+from . import db, scheduler
 
 transfer = Blueprint("transfer", __name__, url_prefix="/transfer")
 
@@ -21,8 +22,16 @@ def list():
 def one_transfer(transfer_id):
     transfer = Transfer.query.filter_by(user_id=current_user.id, id=transfer_id).first()
     if not transfer:
-        return "Forbidden"
+        return abort(403)
     return render_template("transfer_one.html", transfer=transfer)
+
+
+def remove_unconfirmed(transfer_id):
+    with scheduler.app.app_context():
+        transfer = TransferToConfirm.query.filter_by(id=transfer_id).first()
+        db.session.delete(transfer)
+        db.session.commit()
+    print("WYKONANO", transfer_id)
 
 
 @transfer.route("/new", methods=("GET", "POST"))
@@ -36,10 +45,19 @@ def new():
             amount=form.amount.data,
             iban=form.iban.data,
             user_id=current_user.id,
+            task_id=str(datetime.now().timestamp()),
         )
 
         db.session.add(transfer)
         db.session.commit()
+
+        scheduler.add_job(
+            func=remove_unconfirmed,
+            trigger="date",
+            run_date=datetime.now() + timedelta(seconds=30),
+            args=[transfer.id],
+            id=transfer.task_id,
+        )
 
         return redirect(url_for("transfer.confirm", confirm_id=transfer.id))
 
@@ -55,9 +73,10 @@ def confirm(confirm_id):
     ).first()
 
     if not transfer:
-        return "Forbiden"
+        return abort(403)
 
     if form.validate_on_submit():
+        task_id = transfer.task_id
         confirmed_transfer = Transfer(
             title=transfer.title,
             date=transfer.date,
@@ -69,6 +88,12 @@ def confirm(confirm_id):
         db.session.add(confirmed_transfer)
         db.session.delete(transfer)
         db.session.commit()
+
+        try:
+            scheduler.delete_job(task_id)
+        except:
+            pass
+
         return redirect(
             url_for("transfer.one_transfer", transfer_id=confirmed_transfer.id)
         )
@@ -83,8 +108,15 @@ def reject(reject_id):
         user_id=current_user.id, id=reject_id
     ).first()
     if not transfer:
-        return "Forbiden"
+        return abort(403)
+    task_id = transfer.task_id
 
     db.session.delete(transfer)
     db.session.commit()
+
+    try:
+        scheduler.delete_job(task_id)
+    except:
+        pass
+
     return render_template("transfer_reject.html", transfer=transfer)

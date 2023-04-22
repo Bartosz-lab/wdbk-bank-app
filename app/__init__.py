@@ -3,9 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_apscheduler import APScheduler
 
-
-# from app import models
-
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 scheduler = APScheduler()
