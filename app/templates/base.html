@@ -21,12 +21,26 @@
                                 Home
                             </a>
                             {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('main.profile') }}" class="navbar-item">
-                                Profile
-                            </a>
-                            <a href="{{ url_for('auth.changepass') }}" class="navbar-item">
-                                Change Password
-                            </a>
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a href="{{ url_for('transfer.list') }}" class="navbar-link">
+                                    Transfers
+                                </a>
+                                <div class="navbar-dropdown has-text-black">
+                                    <a href="{{ url_for('transfer.new') }}" class="navbar-item">
+                                        New Transfer
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a href="{{ url_for('main.profile') }}" class="navbar-link">
+                                    Profile
+                                </a>
+                                <div class="navbar-dropdown has-text-black">
+                                    <a href="{{ url_for('auth.changepass') }}" class="navbar-item">
+                                        Change Password
+                                    </a>
+                                </div>
+                            </div>
                             {% endif %}
                             {% if not current_user.is_authenticated %}
                             <a href="{{ url_for('auth.login') }}" class="navbar-item">

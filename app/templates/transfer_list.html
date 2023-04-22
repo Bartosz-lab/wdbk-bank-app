@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Transfer List</h3>
+    <div class="box">
+        {% for transfer in transfers %}
+            <div class="box has-background-light">
+                <h4 class="subtitle is-3 has-text-black">{{ transfer.title }}</h4>
+                <div class=" columns is-multiline is-centered">
+                    <div class="column is-one-quarter has-text-right"><p>Date:</p></div>
+                    <div class="column is-three-quarters has-text-left"><p>{{ transfer.date }}</p></div>
+
+                    <div class="column is-one-quarter has-text-right"><p>Amount:</p></div>
+                    <div class="column is-three-quarters has-text-left"><p>{{ transfer.amount }}</p></div>
+
+                    <div class="column is-one-quarter has-text-right"><p>IBAN:</p></div>
+                    <div class="column is-three-quarters has-text-left"><p>{{ transfer.iban }}</p></div>
+                    <a href="{{ url_for('transfer.one_transfer', transfer_id = transfer.id) }}" class="button is-one-quarter is-block is-info is-centered">Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

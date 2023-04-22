@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, EmailField, PasswordField
+from wtforms import StringField, EmailField, PasswordField, DateField, DecimalField
 from wtforms import validators as va
 from password_strength import PasswordPolicy
+from datetime import date
 from flask_login import current_user
 
 from .models import User
@@ -79,3 +80,23 @@ class ChangePassForm(FlaskForm):
 
 class ResetPassForm(FlaskForm):
     email = EmailField("Email", validators=[va.InputRequired(), va.Email()])
+
+
+class TransferForm(FlaskForm):
+    title = StringField(
+        "Title", validators=[va.InputRequired(), va.Length(min=5, max=50)]
+    )
+    date = DateField("Date", validators=[va.InputRequired()], default=date.today)
+    amount = DecimalField(
+        "Amount",
+        validators=[
+            va.InputRequired(),
+        ],
+        places=2,
+    )
+    iban = StringField(
+        "Iban",
+        validators=[
+            va.InputRequired(),
+        ],
+    )

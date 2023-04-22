@@ -30,3 +30,12 @@ class User(UserMixin, db.Model):
     def change_password(self, password):
         self.pass_salt = generate_random_salt()
         self.pass_hash = generate_password_hash(password, self.pass_salt)
+
+
+class Transfer(db.Model):
+    id = sa.Column(sa.Integer, primary_key=True)
+    title = sa.Column(sa.String(50), nullable=False)
+    date = sa.Column(sa.Date(), nullable=False)
+    amount = sa.Column(sa.Numeric(scale=2), nullable=False)
+    iban = sa.Column(sa.String(40))
+    user_id = sa.Column(sa.Integer, sa.ForeignKey(User.id), nullable=False)

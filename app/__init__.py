@@ -28,15 +28,13 @@ def create_app():
         # since the user_id is just the primary key of our user table, use it in the query for the user
         return models.User.query.get(int(user_id))
 
-    # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
+    from .main import main as main_blueprint
+    from .transfer import transfer as transfer_blueprint
 
     app.register_blueprint(auth_blueprint)
-
-    # blueprint for non-auth parts of app
-    from .main import main as main_blueprint
-
     app.register_blueprint(main_blueprint)
+    app.register_blueprint(transfer_blueprint)
 
     with app.app_context():
         db.create_all()
