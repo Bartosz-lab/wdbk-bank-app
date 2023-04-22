@@ -5,7 +5,6 @@ from wtforms import (
     PasswordField,
     DateField,
     DecimalField,
-    IntegerField,
 )
 from wtforms import validators as va
 from password_strength import PasswordPolicy
@@ -111,6 +110,6 @@ class TransferForm(FlaskForm):
 
 class TransferConfirmForm(FlaskForm):
     code = StringField(
-        "Email",
+        "Code",
         validators=[va.Length(min=6, max=6), va.Regexp("^\d{6}$")],
     )
