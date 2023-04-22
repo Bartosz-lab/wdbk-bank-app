@@ -20,10 +20,13 @@ class User(UserMixin, db.Model):
         self.login = login
         self.email = email
 
-        self.pass_salt = generate_random_salt()
-        self.pass_hash = generate_password_hash(password, self.pass_salt)
+        self.change_password(password)
 
         return self
 
     def check_password(self, password):
         return check_password_hash(password, self.pass_hash, self.pass_salt)
+
+    def change_password(self, password):
+        self.pass_salt = generate_random_salt()
+        self.pass_hash = generate_password_hash(password, self.pass_salt)

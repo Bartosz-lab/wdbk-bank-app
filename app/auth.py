@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 
 from .models import User
-from .forms import SignUpForm
+from .forms import SignUpForm, ResetPassForm
 from . import db
 
 auth = Blueprint("auth", __name__)
@@ -57,3 +57,17 @@ def signup():
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
+
+
+@auth.route("/resetpass", methods=("GET", "POST"))
+@login_required
+def resetpass():
+    form = ResetPassForm()
+    if form.validate_on_submit():
+        current_user.change_password(form.password.data)
+
+        db.session.commit()
+
+    return render_template(
+        "resetpass.html", form=form, login=current_user.login, email=current_user.email
+    )

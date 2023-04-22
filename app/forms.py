@@ -1,8 +1,8 @@
-from flask import url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, EmailField, PasswordField
 from wtforms import validators as va
 from password_strength import PasswordPolicy
+from flask_login import current_user
 
 from .models import User
 
@@ -46,3 +46,33 @@ class SignUpForm(FlaskForm):
         print("UPS", field.data)
         if user:
             raise va.ValidationError(f"Login already exists")
+
+
+class ResetPassForm(FlaskForm):
+    old_password = PasswordField(
+        "Password",
+        validators=[
+            va.InputRequired(),
+        ],
+    )
+    password = PasswordField(
+        "Password",
+        validators=[
+            va.InputRequired(),
+        ],
+    )
+    confirm = PasswordField(
+        "Repeat Password",
+        validators=[
+            va.InputRequired(),
+            va.EqualTo("password", message="Passwords must match"),
+        ],
+    )
+
+    def validate_old_password(form, field):
+        if not current_user.check_password(field.data):
+            raise va.ValidationError("Wrong password")
+
+    def validate_password(form, field):
+        if policy.test(field.data) != []:
+            raise va.ValidationError("Password is to week")
