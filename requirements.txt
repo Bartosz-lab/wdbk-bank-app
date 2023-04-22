@@ -1,7 +1,9 @@
+APScheduler==3.10.1
 click==8.1.3
 dnspython==2.3.0
 email-validator==2.0.0.post2
 Flask==2.2.3
+Flask-APScheduler==1.12.4
 Flask-Login==0.6.2
 Flask-Scrypt==0.1.3.6
 Flask-SQLAlchemy==3.0.3
@@ -12,9 +14,14 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.2
 password-strength==0.0.3.post2
+python-dateutil==2.8.2
+pytz==2023.3
+pytz-deprecation-shim==0.1.0.post0
 scrypt==0.8.20
 six==1.16.0
 SQLAlchemy==2.0.9
 typing_extensions==4.5.0
+tzdata==2023.3
+tzlocal==4.3
 Werkzeug==2.2.3
 WTForms==3.0.1

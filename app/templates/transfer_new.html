@@ -4,7 +4,7 @@
 <div class="column is-4 is-offset-4">
     <h3 class="title">New Transfer</h3>
     <div class="box">
-        <form method="POST" action="/transfer/new">
+        <form method="POST" action="{{ url_for('transfer.new') }}">
             {{ form.csrf_token }}
             <div class="field">
                 <div class="control">

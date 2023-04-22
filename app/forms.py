@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, EmailField, PasswordField, DateField, DecimalField
+from wtforms import (
+    StringField,
+    EmailField,
+    PasswordField,
+    DateField,
+    DecimalField,
+    IntegerField,
+)
 from wtforms import validators as va
 from password_strength import PasswordPolicy
 from datetime import date
@@ -99,4 +106,11 @@ class TransferForm(FlaskForm):
         validators=[
             va.InputRequired(),
         ],
+    )
+
+
+class TransferConfirmForm(FlaskForm):
+    code = StringField(
+        "Email",
+        validators=[va.Length(min=6, max=6), va.Regexp("^\d{6}$")],
     )
