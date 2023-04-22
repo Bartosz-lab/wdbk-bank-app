@@ -4,37 +4,58 @@
 <div class="column is-4 is-offset-4">
     <h3 class="title">Sign Up</h3>
     <div class="box">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="notification is-danger">
-                {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
-            </div>
-        {% endif %}
-        {% endwith %}
         <form method="POST" action="/signup">
-
+            {{ form.csrf_token }}
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="text" name="login" placeholder="Login" autofocus="">
+                    {{ form.login(class="input is-large" + (" is-danger" if form.login.errors else  ""), placeholder="Login") }}
                 </div>
+                {% if form.login.errors %}
+                <ul>
+                    {% for error in form.login.errors %}
+                        <li class="help is-large is-danger">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="">
+                    {{ form.email(class="input is-large" + (" is-danger" if form.email.errors else  ""), placeholder="Email") }}
                 </div>
+                {% if form.email.errors %}
+                <ul>
+                    {% for error in form.email.errors %}
+                        <li class="help is-large is-danger">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Password">
+                    {{ form.password(class="input is-large" + (" is-danger" if form.password.errors else  ""), placeholder="Password") }}
                 </div>
+                {% if form.password.errors %}
+                <ul>
+                    {% for error in form.password.errors %}
+                        <li class="help is-large is-danger">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="password" name="password2" placeholder="Retype Password">
+                    {{ form.confirm(class="input is-large" + (" is-danger" if form.confirm.errors else  ""), placeholder="Repeat Password") }}
                 </div>
+                {% if form.confirm.errors %}
+                <ul>
+                    {% for error in form.confirm.errors %}
+                        <li class="help is-large is-danger">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
 
             <button class="button is-block is-info is-large is-fullwidth">Sign Up</button>

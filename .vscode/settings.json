@@ -11,4 +11,8 @@
       "editor.formatOnSave": true
     },
     "python.formatting.provider": "none",
+    "emmet.includeLanguages": {"jinja-html": "html"},
+    "files.associations": {
+      "*.html": "jinja-html"
+     },
   }
