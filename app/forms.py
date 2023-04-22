@@ -43,12 +43,11 @@ class SignUpForm(FlaskForm):
             raise va.StopValidation()
         # if this returns a user, then the login already exists in database
         user = User.query.filter_by(login=field.data).first()
-        print("UPS", field.data)
         if user:
             raise va.ValidationError(f"Login already exists")
 
 
-class ResetPassForm(FlaskForm):
+class ChangePassForm(FlaskForm):
     old_password = PasswordField(
         "Password",
         validators=[
@@ -76,3 +75,7 @@ class ResetPassForm(FlaskForm):
     def validate_password(form, field):
         if policy.test(field.data) != []:
             raise va.ValidationError("Password is to week")
+
+
+class ResetPassForm(FlaskForm):
+    email = EmailField("Email", validators=[va.InputRequired(), va.Email()])

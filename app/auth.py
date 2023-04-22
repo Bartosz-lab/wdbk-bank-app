@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 
 from .models import User
-from .forms import SignUpForm, ResetPassForm
+from .forms import SignUpForm, ChangePassForm, ResetPassForm
 from . import db
 
 auth = Blueprint("auth", __name__)
@@ -59,15 +59,34 @@ def logout():
     return redirect(url_for("main.index"))
 
 
-@auth.route("/resetpass", methods=("GET", "POST"))
+@auth.route("/changepass", methods=("GET", "POST"))
 @login_required
-def resetpass():
-    form = ResetPassForm()
+def changepass():
+    form = ChangePassForm()
     if form.validate_on_submit():
         current_user.change_password(form.password.data)
 
         db.session.commit()
 
     return render_template(
-        "resetpass.html", form=form, login=current_user.login, email=current_user.email
+        "changepass.html", form=form, login=current_user.login, email=current_user.email
     )
+
+
+@auth.route("/resetpass", methods=("GET", "POST"))
+def resetpass():
+    form = ResetPassForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            user.change_password("pass")
+            db.session.commit()
+
+        flash(
+            "If user exists password has been sent to your mail. Joke, your password now is 'pass'",
+            "warning",
+        )
+        return redirect(
+            url_for("auth.login")
+        )  # if the user doesn't exist or password is wrong, reload the page
+    return render_template("resetpass.html", form=form)

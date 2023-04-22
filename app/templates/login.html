@@ -4,10 +4,11 @@
 <div class="column is-4 is-offset-4">
     <h3 class="title">Login</h3>
     <div class="box">
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="notification is-danger">
-                {{ messages[0] }}
+        {% set category, message = messages[0] %}
+            <div class="notification {% if category == "warning" %}is-warning{% else %}is-danger{% endif%}">
+                {{ message }}
             </div>
         {% endif %}
         {% endwith %}
@@ -29,8 +30,16 @@
                     Remember me
                 </label>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth">Login</button>
+            <div class="buttons">
+                <button class="button is-block is-info is-large is-fullwidth">Login</button>
+                <a href="{{ url_for('auth.resetpass') }}" class="button is-block is-info is-large is-fullwidth">
+                    Reset Password
+                </a>  
+            </div>
+            
         </form>
+
+ 
     </div>
 </div>
 {% endblock %}

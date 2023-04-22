@@ -8,43 +8,17 @@
             {{ form.csrf_token }}
             <div class="field">
                 <div class="control">
-                    {{ form.old_password(class="input is-large" + (" is-danger" if form.old_password.errors else  ""), placeholder="Old Password") }}
+                    {{ form.email(class="input is-large" + (" is-danger" if form.email.errors else  ""), placeholder="Email") }}
                 </div>
-                {% if form.old_password.errors %}
+                {% if form.email.errors %}
                 <ul>
-                    {% for error in form.old_password.errors %}
+                    {% for error in form.email.errors %}
                         <li class="help is-large is-danger">{{ error }}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}
             </div>
-
-            <div class="field">
-                <div class="control">
-                    {{ form.password(class="input is-large" + (" is-danger" if form.password.errors else  ""), placeholder="Password") }}
-                </div>
-                {% if form.password.errors %}
-                <ul>
-                    {% for error in form.password.errors %}
-                        <li class="help is-large is-danger">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    {{ form.confirm(class="input is-large" + (" is-danger" if form.confirm.errors else  ""), placeholder="Repeat Password") }}
-                </div>
-                {% if form.confirm.errors %}
-                <ul>
-                    {% for error in form.confirm.errors %}
-                        <li class="help is-large is-danger">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
-            <button class="button is-block is-info is-large is-fullwidth">Save</button>
+            <button class="button is-block is-info is-large is-fullwidth">Reset</button>
         </form>
     </div>
 </div>
