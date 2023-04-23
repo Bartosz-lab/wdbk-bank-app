@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
+from flask_mail import Message
+from secrets import choice
+import string
 
 
 from .models import User
 from .forms import SignUpForm, ChangePassForm, ResetPassForm
-from . import db
+from . import db, mail
 
 auth = Blueprint("auth", __name__)
 
@@ -77,16 +80,36 @@ def changepass():
 def resetpass():
     form = ResetPassForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user: User = User.query.filter_by(email=form.email.data).first()
         if user:
-            user.change_password("pass")
+            password = random_pass()
+            user.change_password(password)
             db.session.commit()
 
+            msg = Message("Password Reset to thebestbank.ever", recipients=[user.email])
+            msg.body = f"Your password is set to '{password}'"
+            mail.send(msg)
+
         flash(
-            "If user exists password has been sent to your mail. Joke, your password now is 'pass'",
+            "If user exists password has been sent to your mail.",
             "warning",
         )
         return redirect(
             url_for("auth.login")
         )  # if the user doesn't exist or password is wrong, reload the page
     return render_template("resetpass.html", form=form)
+
+
+def random_pass():
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    while True:
+        password = "".join(choice(alphabet) for _ in range(10))
+        if (
+            any(c.islower() for c in password)
+            and any(c.isupper() for c in password)
+            and any(c.isdigit() for c in password)
+            and any(c in string.punctuation for c in password)
+        ):
+            break
+
+    return password

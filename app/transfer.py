@@ -1,11 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for, abort
 from flask_login import login_required, current_user
+from flask_mail import Message
 from datetime import datetime, timedelta
+from secrets import choice
+from string import digits
 
 
 from .models import Transfer, TransferToConfirm
 from .forms import TransferForm, TransferConfirmForm
-from . import db, scheduler
+from . import db, scheduler, mail
 
 transfer = Blueprint("transfer", __name__, url_prefix="/transfer")
 
@@ -31,7 +34,6 @@ def remove_unconfirmed(transfer_id):
         transfer = TransferToConfirm.query.filter_by(id=transfer_id).first()
         db.session.delete(transfer)
         db.session.commit()
-    print("WYKONANO", transfer_id)
 
 
 @transfer.route("/new", methods=("GET", "POST"))
@@ -45,6 +47,7 @@ def new():
             amount=form.amount.data,
             iban=form.iban.data,
             user_id=current_user.id,
+            auth_code=random_code(),
             task_id=str(datetime.now().timestamp()),
         )
 
@@ -59,6 +62,18 @@ def new():
             id=transfer.task_id,
         )
 
+        msg = Message(
+            "Transfer confirm from thebestbank.ever",
+            recipients=[current_user.email],
+        )
+        msg.body = f"""Confirm Transfer
+        Title: {transfer.title}
+        Date: {transfer.date}
+        Amount: {transfer.amount}
+        IBAN: {transfer.iban}
+        Your Auth Code: {transfer.auth_code}"""
+        mail.send(msg)
+
         return redirect(url_for("transfer.confirm", confirm_id=transfer.id))
 
     return render_template("transfer_new.html", form=form)
@@ -68,13 +83,14 @@ def new():
 @login_required
 def confirm(confirm_id):
     form = TransferConfirmForm()
-    transfer = TransferToConfirm.query.filter_by(
+    transfer: TransferToConfirm = TransferToConfirm.query.filter_by(
         user_id=current_user.id, id=confirm_id
     ).first()
 
     if not transfer:
         return abort(403)
 
+    form.correct_code = transfer.auth_code
     if form.validate_on_submit():
         task_id = transfer.task_id
         confirmed_transfer = Transfer(
@@ -120,3 +136,7 @@ def reject(reject_id):
         pass
 
     return render_template("transfer_reject.html", transfer=transfer)
+
+
+def random_code():
+    return "".join(choice(digits) for _ in range(6))

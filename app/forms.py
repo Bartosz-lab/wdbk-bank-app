@@ -113,3 +113,7 @@ class TransferConfirmForm(FlaskForm):
         "Code",
         validators=[va.Length(min=6, max=6), va.Regexp("^\d{6}$")],
     )
+
+    def validate_code(form, field):
+        if field.data != form.correct_code:
+            raise va.ValidationError(f"Wrocg Code")
