@@ -13,8 +13,8 @@ class User(UserMixin, db.Model):
     id = sa.Column(sa.Integer, primary_key=True)
     login = sa.Column(sa.String(20), unique=True)
     email = sa.Column(sa.String(100), unique=True)
-    pass_hash = sa.Column(sa.String(100))
-    pass_salt = sa.Column(sa.String(100))
+    pass_hash = sa.Column(sa.LargeBinary)
+    pass_salt = sa.Column(sa.LargeBinary)
 
     def __init__(self, login, email, password) -> None:
         self.login = login
