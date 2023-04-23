@@ -9,12 +9,9 @@ scheduler = APScheduler()
 
 
 def create_app():
-    app = Flask(__name__)
-
-    app.config["SECRET_KEY"] = "secret-key-goes-here"
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
-    app.config["SQLALCHEMY_ECHO"] = True
-    db.init_app(app)
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object("config")
+    app.config.from_pyfile("config.py", silent=True)
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
@@ -35,6 +32,7 @@ def create_app():
     app.register_blueprint(main_blueprint)
     app.register_blueprint(transfer_blueprint)
 
+    db.init_app(app)
     with app.app_context():
         db.create_all()
 
