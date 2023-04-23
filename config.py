@@ -7,7 +7,7 @@ class Config(object):
     SECRET_KEY = os.getenv("SECRET_KEY", "secret-key-goes-here")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite://")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     MAIL_SERVER = os.getenv("MAIL_SERVER", "placeholder.local")
     MAIL_PORT = os.getenv("MAIL_PORT", 587)
     MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", True)

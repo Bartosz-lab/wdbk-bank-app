@@ -35,7 +35,6 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/flask_app.conf:ro
       - ./instance:/etc/ssl/private/
-    command: [nginx-debug, '-g', 'daemon off;']
     depends_on:
       - web
 
