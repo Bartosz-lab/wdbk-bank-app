@@ -51,7 +51,15 @@ class SignUpForm(FlaskForm):
         # if this returns a user, then the login already exists in database
         user = User.query.filter_by(login=field.data).first()
         if user:
-            raise va.ValidationError(f"Login already exists")
+            raise va.ValidationError("Login already exists")
+
+    def validate_email(form, field):
+        if form.email.errors:
+            raise va.StopValidation()
+        # if this returns a user, then the email already exists in database
+        user = User.query.filter_by(email=field.data).first()
+        if user:
+            raise va.ValidationError("Email already exists")
 
 
 class ChangePassForm(FlaskForm):
