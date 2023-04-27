@@ -17,7 +17,7 @@ transfer = Blueprint("transfer", __name__, url_prefix="/transfer")
 @login_required
 def list():
     transfers = Transfer.query.filter_by(user_id=current_user.id).all()
-    return render_template("transfer_list.html", transfers=transfers)
+    return render_template("transfer/list.html", transfers=transfers)
 
 
 @transfer.get("/<int:transfer_id>")
@@ -26,7 +26,7 @@ def one_transfer(transfer_id):
     transfer = Transfer.query.filter_by(user_id=current_user.id, id=transfer_id).first()
     if not transfer:
         return abort(403)
-    return render_template("transfer_one.html", transfer=transfer)
+    return render_template("transfer/one.html", transfer=transfer)
 
 
 def remove_unconfirmed(transfer_id):
@@ -76,7 +76,7 @@ def new():
 
         return redirect(url_for("transfer.confirm", confirm_id=transfer.id))
 
-    return render_template("transfer_new.html", form=form)
+    return render_template("transfer/new.html", form=form)
 
 
 @transfer.route("/confirm/<int:confirm_id>", methods=("GET", "POST"))
@@ -114,7 +114,7 @@ def confirm(confirm_id):
             url_for("transfer.one_transfer", transfer_id=confirmed_transfer.id)
         )
 
-    return render_template("transfer_confirm.html", transfer=transfer, form=form)
+    return render_template("transfer/confirm.html", transfer=transfer, form=form)
 
 
 @transfer.post("/reject/<int:reject_id>")
@@ -135,7 +135,7 @@ def reject(reject_id):
     except:
         pass
 
-    return render_template("transfer_reject.html", transfer=transfer)
+    return render_template("transfer/reject.html", transfer=transfer)
 
 
 def random_code():

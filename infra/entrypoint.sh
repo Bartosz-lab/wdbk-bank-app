@@ -11,4 +11,4 @@ then
     echo "PostgreSQL started"
 fi
 
-exec gunicorn --bind :8000 --workers 6 'app:create_app()'
+exec gunicorn --config gunicorn_config.py 'app:create_app()'
