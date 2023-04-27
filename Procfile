@@ -1,1 +1,1 @@
-web: gunicorn --worker-tmp-dir /dev/shm --config gunicorn_config.py 'app:create_app()'
+web: gunicorn --worker-tmp-dir /dev/shm --config infra/gunicorn_config.py 'app:create_app()'
